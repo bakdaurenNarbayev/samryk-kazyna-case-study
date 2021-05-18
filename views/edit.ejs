@@ -1,0 +1,59 @@
+<%- include('partials/head')%>
+<%- include('partials/products')%>
+
+<h1>Изменить детали заказа</h1>
+<p><%=order.id%></p>
+
+<form method="POST" action="/orders/<%=order.id%>?_method=PATCH">
+  <div class="mb-3">
+    <label for="company" class="form-label">Выберите правильную компанию:</label>
+    <% if(order.company === 'ТОО "ВагонСтрой"') { %>
+      <select name="company" id="company" class="form-select" aria-label="Default select example">
+        <option selected value="1">ТОО "ВагонСтрой"</option>
+        <option value="2">ТОО "Ұшақ Құрылыс"</option>
+        <option value="3">ТОО "Metal House"</option>
+      </select>
+    <% } else if(order.company === 'ТОО "Ұшақ Құрылыс"') { %>
+      <select name="company" id="company" class="form-select" aria-label="Default select example">
+        <option value="1">ТОО "ВагонСтрой"</option>
+        <option selected value="2">ТОО "Ұшақ Құрылыс"</option>
+        <option value="3">ТОО "Metal House"</option>
+      </select>
+    <% } else { %>
+      <select name="company" id="company" class="form-select" aria-label="Default select example">
+        <option value="1">ТОО "ВагонСтрой"</option>
+        <option value="2">ТОО "Ұшақ Құрылыс"</option>
+        <option selected value="3">ТОО "Metal House"</option>
+      </select>
+    <% } %>
+  </div>
+  <div class="mb-3">
+    <label for="product" class="form-label">Выберите нужную продукцию:</label>
+    <% if(order.product === 'Сталь') { %>
+      <select name="product" id="product" class="form-select" aria-label="Default select example">
+        <option selected value="1">Сталь</option>
+        <option value="2">Алюминий</option>
+        <option value="3">Железо</option>
+      </select>
+    <% } else if(order.product === 'Алюминий') { %>
+      <select name="product" id="product" class="form-select" aria-label="Default select example">
+        <option value="1">Сталь</option>
+        <option selected value="2">Алюминий</option>
+        <option value="3">Железо</option>
+      </select>
+    <% } else { %>
+      <select name="product" id="product" class="form-select" aria-label="Default select example">
+        <option value="1">Сталь</option>
+        <option value="2">Алюминий</option>
+        <option selected value="3">Железо</option>
+      </select>
+    <% } %>
+  </div>
+  <div class="mb-3">
+    <label for="number" class="form-label">Количество продукции в тоннах:</label>
+    <input type="number" name="number" id="number" min="1" data-bind="value:replyNumber" value=<%=order.number%> />
+  </div>
+  <button>Изменить</button>
+</form>
+
+<%- include('partials/footer')%>

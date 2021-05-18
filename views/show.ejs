@@ -1,0 +1,11 @@
+<%- include('partials/head')%>
+<%- include('partials/products')%>
+
+<h1>Детали заказа</h1>
+<p><%=order.id%>: <%=order.company%> - <%=order.number%> <%=order.product%></p>
+<a href="/orders/<%= order.id %>/edit">изменить</a>
+<form method="POST" action="/orders/<%= order.id %>?_method=DELETE">
+  <button>удалить</button>
+</form>
+
+<%- include('partials/footer')%>

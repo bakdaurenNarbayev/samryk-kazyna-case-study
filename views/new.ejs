@@ -1,0 +1,63 @@
+<%- include('partials/head')%>
+<%- include('partials/products')%>
+
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+          <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+              <div class="card-header py-3 text-white bg-primary border-primary">
+                <h4 class="my-0 fw-normal">Сталь</h4>
+              </div>
+              <div class="card-body">
+                <button type="button" id="order-steel" class="w-100 btn btn-lg btn-outline-primary">Заказать</button>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+              <div class="card-header py-3 text-white bg-primary border-primary">
+                <h4 class="my-0 fw-normal">Алюминий</h4>
+              </div>
+              <div class="card-body">
+                <button type="button" id="order-aluminum" class="w-100 btn btn-lg btn-outline-primary">Заказать</button>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+              <div class="card-header py-3 text-white bg-primary border-primary">
+                <h4 class="my-0 fw-normal">Железо</h4>
+              </div>
+              <div class="card-body">
+                <button type="button" id="order-iron" class="w-100 btn btn-lg btn-outline-primary">Заказать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <form id="forms" style="display: none;" action="/orders" method="post">
+        <div class="mb-3">
+          <label for="company" class="form-label">Выберите свою компанию:</label>
+          <select name="company" id="company" class="form-select" aria-label="Default select example">
+            <option value="1">ТОО "ВагонСтрой"</option>
+            <option value="2">ТОО "Ұшақ Құрылыс"</option>
+            <option value="3">ТОО "Metal House"</option>
+          </select>
+        </div>
+        <div class="mb-3" style="display: none;">
+          <label for="product" class="form-label">Выберите нужную продукцию:</label>
+          <select name="product" id="product" class="form-select" aria-label="Default select example">
+            <option value="1">Сталь</option>
+            <option value="2">Алюминий</option>
+            <option value="3">Железо</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="number" class="form-label">Количество продукции в тоннах:</label>
+          <input type="number" name="number" id="number" min="1" data-bind="value:replyNumber" />
+        </div>
+        <button type="submit" class="btn btn-primary">Заказать</button>
+      </form>
+
+      <script type="text/javascript" src="/order.js"></script>
+
+      <%- include('partials/footer')%>

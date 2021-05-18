@@ -1,0 +1,14 @@
+<%- include('partials/head')%>
+<%- include('partials/products')%>
+
+<h1>Заказы</h1>
+<ul>
+    <% for(let o of orders) {%>
+    <li>
+      <%=o.company%> - <%=o.number%> <%=o.product%>
+      <a href="/orders/<%= o.id %>">детали</a>
+    </li>
+    <% }%>
+</ul>
+
+<%- include('partials/footer')%>
