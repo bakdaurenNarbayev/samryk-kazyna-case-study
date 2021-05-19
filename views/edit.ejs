@@ -2,9 +2,9 @@
 <%- include('partials/products')%>
 
 <h1>Изменить детали заказа</h1>
-<p><%=order.id%></p>
+<p><%=order._id%></p>
 
-<form method="POST" action="/orders/<%=order.id%>?_method=PATCH">
+<form method="POST" action="/orders/<%=order._id%>?_method=PUT">
   <div class="mb-3">
     <label for="company" class="form-label">Выберите правильную компанию:</label>
     <% if(order.company === 'ТОО "ВагонСтрой"') { %>
@@ -55,5 +55,7 @@
   </div>
   <button>Изменить</button>
 </form>
+
+<a href="/orders/<%= order._id %>">назад</a>
 
 <%- include('partials/footer')%>

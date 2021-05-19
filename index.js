@@ -1,8 +1,20 @@
 const path = require('path');
 const methodOverride = require('method-override')
-const { v4: uuid } = require('uuid'); //For generating ID's
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+
+const Order = require('./models/order');
+
+mongoose.connect('mongodb://localhost:27017/samrykKazynaCaseStudy', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log("MONGO CONNECTION OPEN!!!")
+    })
+    .catch(err => {
+        console.log("OH NO MONGO CONNECTION ERROR!!!!")
+        console.log(err)
+    })
+
 
 app.use(express.static(path.join(__dirname, 'public')))
 //To parse form data in POST request body:
@@ -13,34 +25,20 @@ app.use(express.json())
 app.use(methodOverride('_method'))
 // Views folder and EJS setup:
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
-// Our fake database:
-let orders = [
-  {
-      id: uuid(),
-      company: 'ТОО "ВагонСтрой"',
-      product: 'Сталь',
-      number: '4'
-  },
-  {
-      id: uuid(),
-      company: 'ТОО "Ұшақ Құрылыс"',
-      product: 'Алюминий',
-      number: '5'
-  },
-  {
-      id: uuid(),
-      company: 'ТОО "Metal House"',
-      product: 'Железо',
-      number: '10'
-  }
-]
 // **********************************
 // INDEX - renders multiple orders
 // **********************************
-app.get('/orders', (req, res) => {
-  res.render('index', { orders });
+app.get('/orders', async (req, res) => {
+  const { company } = req.query;
+  if(company) {
+    const orders = await Order.find({ company });
+    res.render('index', { orders, company });
+  } else {
+    const orders = await Order.find({});
+    res.render('index', { orders, company: 'Всех' });
+  }
 })
 // **********************************
 // NEW - renders a form
@@ -51,9 +49,8 @@ app.get('/orders/new', (req, res) => {
 // **********************************
 // CREATE - creates a new order
 // **********************************
-app.post('/orders', (req, res) => {
+app.post('/orders', async (req, res) => {
   let { company, product, number } = req.body;
-  const id = uuid();
 
   if(company === '1') company = 'ТОО "ВагонСтрой"';
   else if(company === '2') company = 'ТОО "Ұшақ Құрылыс"';
@@ -65,31 +62,31 @@ app.post('/orders', (req, res) => {
   else if(product === '3') product = 'Железо';
   else throw new Error();
 
-  orders.push({ id, company, product, number })
-  res.redirect('/orders');
+  const order = new Order({company: company, product: product, number: number});
+  await order.save();
+  res.redirect(`/orders/${order._id}`);
 })
 // *******************************************
 // SHOW - details about one particular order
 // *******************************************
-app.get('/orders/:id', (req, res) => {
+app.get('/orders/:id', async (req, res) => {
   const { id } = req.params;
-  const order = orders.find(o => o.id === id);
-  res.render('show', { order })
+  const order = await Order.findById(id);
+  res.render('show', { order });
 })
 // *******************************************
 // EDIT - renders a form to edit a comment
 // *******************************************
-app.get('/orders/:id/edit', (req, res) => {
+app.get('/orders/:id/edit', async (req, res) => {
   const { id } = req.params;
-  const order = orders.find(o => o.id === id);
-  res.render('edit', { order })
+  const order = await Order.findById(id);
+  res.render('edit', { order });
 })
 // *******************************************
 // UPDATE - updates a particular order
 // *******************************************
-app.patch('/orders/:id', (req, res) => {
+app.put('/orders/:id', async (req, res) => {
   const { id } = req.params;
-  const foundOrder = orders.find(o => o.id === id);
 
   //get new data from req.body
   let newCompany = req.body.company;
@@ -107,18 +104,16 @@ app.patch('/orders/:id', (req, res) => {
   else throw new Error();
 
   //update the order with the data from req.body:
-  foundOrder.company = newCompany;
-  foundOrder.product = newProduct;
-  foundOrder.number = newNumber;
+  const order = await Order.findByIdAndUpdate(id, {company: newCompany, product: newProduct, number: newNumber}, {runValidators: true});
   //redirect back to index (or wherever you want)
-  res.redirect('/orders')
+  res.redirect(`/orders/${order._id}`);
 })
 // *******************************************
 // DELETE/DESTROY- removes a single comment
 // *******************************************
-app.delete('/orders/:id', (req, res) => {
+app.delete('/orders/:id', async (req, res) => {
   const { id } = req.params;
-  orders = orders.filter(o => o.id !== id);
+  const order = await Order.findByIdAndDelete(id);
   res.redirect('/orders');
 })
 
